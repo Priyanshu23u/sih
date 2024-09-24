@@ -12,6 +12,7 @@ nlp = spacy.load('en_core_web_sm')
 
 # Create Flask app, using absolute path to ensure static files are found correctly
 flask_app = Flask(__name__, static_folder=os.path.join(os.getcwd(), 'SIH-24-1867/my-project/dist'), static_url_path='/')
+
 CORS(flask_app)  # Allow CORS for frontend-backend communication
 
 # MongoDB setup
@@ -29,10 +30,9 @@ collection = db['newscontents']
 # Serve the React frontend
 @flask_app.route('/')
 def serve():
-    """Serve the React build's index.html file"""
-    # Debug print to ensure Flask is looking in the correct folder
-    print(f"Serving from: {flask_app.static_folder}")
+    print(f"Serving from: {flask_app.static_folder}")  # Debug print
     return send_from_directory(flask_app.static_folder, 'index.html')
+
 
 # Serve any static files or routes for the React frontend
 @flask_app.route('/<path:path>')

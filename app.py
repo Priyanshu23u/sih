@@ -3,16 +3,15 @@ import pandas as pd
 import re
 import spacy
 import dateparser
-from flask import Flask, jsonify, send_from_directory, request
+from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from flask_cors import CORS
 
 # Load spaCy's English model
 nlp = spacy.load('en_core_web_sm')
 
-# Create Flask app, using absolute path to ensure static files are found correctly
-flask_app = Flask(__name__, static_folder=os.path.join(os.getcwd(), 'SIH-24-1867/my-project/dist'), static_url_path='/')
-
+# Create Flask app (no static folder needed anymore)
+flask_app = Flask(__name__)
 CORS(flask_app)  # Allow CORS for frontend-backend communication
 
 # MongoDB setup
@@ -27,32 +26,10 @@ except Exception as e:
 db = client['sih1']
 collection = db['newscontents']
 
-# Serve the React frontend
-@flask_app.route('/')
-def serve():
-    print(f"Serving from: {flask_app.static_folder}")  # Debug print
-    return send_from_directory(flask_app.static_folder, 'index.html')
-
-
-# Serve any static files or routes for the React frontend
-@flask_app.route('/<path:path>')
-def static_proxy(path):
-    """Serve the file if it exists, or fallback to index.html for React routing"""
-    if os.path.exists(f'{flask_app.static_folder}/{path}'):
-        return send_from_directory(flask_app.static_folder, path)
-    else:
-        return send_from_directory(flask_app.static_folder, 'index.html')
-
-# Handle 404 errors by serving the React frontend
-@flask_app.errorhandler(404)
-def not_found(e):
-    """Fallback for React Router"""
-    return send_from_directory(flask_app.static_folder, 'index.html')
-
 # Non-Indian countries to filter out location
 non_indian_countries = [
     'Vietnam', 'Myanmar', 'USA', 'China', 'Japan', 'UK', 'Germany', 'France',
-    'Brazil', 'Canada', 'Russia', 'Australia', 'Pakistan', 'Sri Lanka', 'Nepal', 
+    'Brazil', 'Canada', 'Russia', 'Australia', 'Pakistan', 'Sri Lanka', 'Nepal',
     'Bangladesh', 'Thailand', 'Singapore', 'Indonesia', 'Mexico', 'South Korea'
 ]
 
@@ -108,7 +85,7 @@ def process_twitter_data():
     try:
         data = request.json
         tweets = data.get('tweets', [])
-        
+
         if not tweets:
             return jsonify({"error": "No tweet data provided"}), 400
 

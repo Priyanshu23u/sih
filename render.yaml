@@ -1,0 +1,25 @@
+# render.yaml
+services:
+  - type: web
+    name: sih-backend  # Name for your Flask backend service
+    env: python
+    region: oregon     # Choose a region (default: Oregon)
+    buildCommand: ""   # No special build command for Flask
+    startCommand: gunicorn app:flask_app  # Start the Flask app using gunicorn
+    autoDeploy: true   # Automatically deploy changes
+    plan: free         # Use Render's free tier (optional)
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: MONGO_URI
+        value: 'mongodb+srv://Priyanshu23u:24681012@cluster0.fyvfy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'  # Replace this with your MongoDB URI
+    build:
+      dockerfilePath: ""  # Leave this empty if you're not using Docker
+
+  - type: static
+    name: sih-frontend  # Name for your React frontend service
+    staticPublishPath: ./SIH-24-1867/my-project/dist  # Path to the React build folder
+    buildCommand: npm install && npm run build  # Build command for React
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://sih-backend.onrender.com  # API URL to your Flask backend

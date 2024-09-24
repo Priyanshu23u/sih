@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "mongodb": "^6.8.1",
+    "mongoose": "^8.6.1",
+    "rettiwt-api": "^4.0.0"
+  },
+  "name": "twiiter",
+  "version": "1.0.0",
+  "main": "twitter.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
